@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Blog</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f87171, #dc2626);
+        }
+
+        .delete-card {
+            background: white;
+            width: 420px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .delete-card h2 {
+            color: #1f2937;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button, a {
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+        .cancel-btn {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .cancel-btn:hover {
+            background: #d1d5db;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="delete-card">
+        <h2>Are you sure you want to delete<br> "{{ blog.title }}"?</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="buttons">
+                <button type="submit" class="delete-btn">Yes, Delete</button>
+                <a href="{% url 'home' %}" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
