@@ -87,6 +87,10 @@
     </div>
 
     <div class="container">
+        <form action="{% url 'home' %}" method="get">
+            <input type="text" name="search" placeholder="Search blogs..." value="{{ request.GET.search }}">
+            <button type="submit">Search</button>
+        </form>
         {% for blog in blogs %}
         <div class="blog-card">
             <p class="penname">By {{ blog.penname }}</p>

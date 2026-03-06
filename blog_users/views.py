@@ -1,97 +1,74 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .froms import Registerform,Loginform,OTPForm,Createform
-from .models import Bloguser,Create_blog
-import random
+from .froms import Registerform,Loginform,Createform
+from .models import Create_blog
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.core.mail import send_mail
+from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def create_user(request):
     form = Registerform()
     if request.method == "POST":
         form = Registerform(request.POST)
         if form.is_valid():
-            form.save()
-        return redirect('loginuser')
-    return render(request, 'register.html', {
-        'form': form
-    })
+            user = form.save()
+            login(request,user)
+            return redirect('home')
+    return render(request, 'register.html', {'form': form})
+
 
 def login_user(request):
     if request.method == "POST":
-        form = Loginform(request.POST)
+        form = Loginform(request, data=request.POST)
         if form.is_valid():
-            full_name = form.cleaned_data['full_name']
-            email = form.cleaned_data['registered_email']
-
-            user = Bloguser.objects.filter(
-                full_name=full_name,
-                registered_email=email
-            ).first()
-
-            if user:
-                otp = str(random.randint(100000, 999999))
-
-                # Store in session
-                request.session['otp'] = otp
-                request.session['login_email'] = email
-
-                print("Your OTP is:", otp)
-
-                return redirect("verify_otp")
-            else:
-                return render(request, "login.html", {
-                    "form": form,
-                    "error": "Invalid details"
-                })
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
     else:
         form = Loginform()
-
     return render(request, "login.html", {"form": form})
 
-def verify_otp(request):
-    if request.method == "POST":
-        form = OTPForm(request.POST)
-        if form.is_valid():
-            entered_otp = form.cleaned_data['otp']
-            session_otp = request.session.get('otp')
-            if entered_otp == session_otp:
-                request.session['user'] = request.session.get('login_email')
-                return redirect("home")
-            else:
-                return render(request, "otp.html", {
-                    "form": form,
-                    "error": "Invalid OTP"
-                })
-    else:
-        form = OTPForm()
 
-    return render(request, "otp.html", {"form": form})
-
-
+@login_required
 def home(request):
-    if 'user' not in request.session:
-        return redirect('loginuser')
-
     blog = Create_blog.objects.all()
+    search_query = request.GET.get('search')
+    if search_query:
+        blog = blog.filter(
+            Q(title__icontains=search_query) |
+            Q(content__icontains=search_query) |
+            Q(penname__icontains=search_query)
+        )
     return render(request,'home.html',{'blogs':blog})
 
+from django.contrib.auth.decorators import login_required
+from .models import Bloguser
 
+@login_required
 def create_blog(request):
-    if 'user' not in request.session:
-        return redirect('loginuser')
     form = Createform()
-    if request.method == 'POST':
+
+    if request.method == "POST":
         form = Createform(request.POST)
+
         if form.is_valid():
-            form.save()
+            blog = form.save(commit=False)
+
+            blog_user, created = Bloguser.objects.get_or_create(user=request.user)
+            blog.user = blog_user
+            blog.save()
             return redirect('home')
     return render(request, "create.html", {"form": form})
 from django.shortcuts import redirect
 
+
 def logout_user(request):
-    if 'user_id' in request.session:
-        del request.session['user_id']
+    logout(request)
     return redirect('loginuser')
 
+
+@login_required
 def update_blog(request, id):
 
     blog = get_object_or_404(Create_blog, id=id)
@@ -103,8 +80,10 @@ def update_blog(request, id):
         if form.is_valid():
             form.save()
             return redirect('home')
-
     return render(request, 'update.html', {'form': form})
+
+
+@login_required
 def delete_blog(request, id):
     blog = get_object_or_404(Create_blog, id=id)
 

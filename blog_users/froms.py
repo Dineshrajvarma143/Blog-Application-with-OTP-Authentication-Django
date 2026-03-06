@@ -1,18 +1,19 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from .models import Bloguser,Create_blog
-class Registerform(forms.ModelForm):
+from django.contrib.auth.models import User
+
+class Registerform(UserCreationForm):
+    email = forms.EmailField(required=True)
     class Meta:
-        model = Bloguser
-        fields = ['full_name','age','phone','registered_email']
+        model = User
+        fields = ['username','email','password1','password2']
 
-class Loginform(forms.Form):
-    full_name = forms.CharField(max_length=100)
-    registered_email = forms.EmailField()
+class Loginform(AuthenticationForm):
+    pass
 
-class OTPForm(forms.Form):
-    otp = forms.CharField(max_length=6)
 
 class Createform(forms.ModelForm):
     class Meta:
         model = Create_blog
-        fields = ['user','title','content','penname']
+        fields = ['title','content','penname']
