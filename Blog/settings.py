@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-vgd39$yybv%n_8(04=dm&+gb-p$6)9nu0dbn#em00tso=nj7pr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['blog-application-with-otp-authentication.onrender.com']
+ALLOWED_HOSTS = ['blog-application-with-otp-authentication.onrender.com',
+                '127.0.0.1',
+                'localhost'
+            ,]
 
 
 # Application definition
@@ -120,9 +123,6 @@ STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'penugondadinesh4@gmail.com'
-EMAIL_HOST_PASSWORD = 'Dinesh@143'
+# ── LOCAL DEVELOPMENT: prints OTP to terminal instead of sending email ──
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+STATICFILES_DIRS = [BASE_DIR / 'blog_users' / 'static']

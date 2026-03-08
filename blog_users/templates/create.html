@@ -1,115 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Blog</title>
+{% extends 'base.html' %}
+{% block title %}Write a Story — Inkwell{% endblock %}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+{% block extra_css %}
+<style>
+  .write-layout { max-width: 780px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .write-header { margin-bottom: 2rem; }
+  .write-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; }
+  .write-header p { color: var(--muted); margin-top: 4px; }
+  .write-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; }
+  .char-count { font-size: 0.8rem; color: var(--muted); text-align: right; margin-top: 4px; }
+  .form-actions { display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center; margin-top: 1.5rem; }
+</style>
+{% endblock %}
 
-        .form-container {
-            background: white;
-            padding: 40px;
-            width: 400px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.6s ease-in-out;
-        }
+{% block content %}
+<div class="write-layout">
+  <div class="write-header">
+    <h1>Write a New Story</h1>
+    <p>Share your ideas, experiences and insights with the world</p>
+  </div>
 
-        .form-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #1e293b;
-        }
+  {% if messages %}
+  <div class="messages" style="margin-bottom:1rem">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
-        form p {
-            margin-bottom: 15px;
-        }
+  <div class="write-card">
+    <form method="POST" action="/create/">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Story Title *</label>
+        <input class="form-input" type="text" name="title" placeholder="Give your story a compelling title…" required autofocus/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Story *</label>
+        <textarea class="form-input" name="content" id="content-area" placeholder="Tell your story… share your ideas, experiences, or insights." required style="min-height:260px"></textarea>
+        <div class="char-count" id="word-count">0 words</div>
+      </div>
+      <div class="form-actions">
+        <a href="/home/" class="btn btn-outline">Cancel</a>
+        <button type="submit" class="btn btn-primary">Publish Story →</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus, textarea:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 5px rgba(59, 130, 246, 0.4);
-        }
-
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .submit-btn {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .submit-btn:hover {
-            background: #2563eb;
-        }
-
-        .reset-btn {
-            background: #e2e8f0;
-        }
-
-        .reset-btn:hover {
-            background: #cbd5e1;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="form-container">
-        <h2>Create Blog</h2>
-
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-
-            <div class="buttons">
-                <button type="submit" class="submit-btn">Create</button>
-                <button type="reset" class="reset-btn">Reset</button>
-            </div>
-        </form>
-    </div>
-
-</body>
-</html>
+<script>
+  const area = document.getElementById('content-area');
+  const count = document.getElementById('word-count');
+  area.addEventListener('input', () => {
+    const words = area.value.trim().split(/\s+/).filter(Boolean).length;
+    count.textContent = words + (words === 1 ? ' word' : ' words');
+  });
+</script>
+{% endblock %}
