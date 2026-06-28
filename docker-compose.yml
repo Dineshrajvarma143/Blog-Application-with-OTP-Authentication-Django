@@ -1,0 +1,7 @@
+services:
+  web:
+    build: .
+    container_name: blog_django_app
+    ports:
+      - "8000:8000"
+    restart: always
