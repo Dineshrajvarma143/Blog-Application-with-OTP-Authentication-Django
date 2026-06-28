@@ -1,107 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogs</title>
+{% extends 'base.html' %}
+{% block title %}Home — Inkwell{% endblock %}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-        }
+{% block extra_css %}
+<style>
+  .hero { background: linear-gradient(135deg, var(--cream) 0%, var(--paper) 60%); padding: 5rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(212,168,67,0.04) 40px, rgba(212,168,67,0.04) 41px); pointer-events: none; }
+  .hero-eyebrow { display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); background: rgba(192,57,43,0.08); padding: 4px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.25rem; }
+  .hero h1 em { color: var(--accent); font-style: italic; }
+  .hero p { font-size: 1.1rem; color: var(--muted); max-width: 520px; margin: 0 auto 2rem; line-height: 1.7; }
+  .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .hero-cta .btn { font-size: 1rem; padding: 0.75rem 1.75rem; }
 
-        /* Navbar */
-        .navbar {
-            background: #1e293b;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  .section { padding: 3rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .section-header { display: flex; align-items: center; margin-bottom: 2rem; gap: 1rem; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; white-space: nowrap; }
+  .divider { flex: 1; height: 1px; background: var(--border); }
 
-        .navbar h2 {
-            color: white;
-            margin: 0;
-        }
+  .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 1.5rem; }
+  .blog-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; cursor: pointer; }
+  .blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px var(--shadow-deep); }
+  .card-top { height: 160px; background: linear-gradient(135deg, var(--cream), var(--warm)); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .card-top img { width: 100%; height: 100%; object-fit: cover; }
+  .card-top .emoji { font-size: 3.5rem; }
+  .card-tag { position: absolute; top: 12px; left: 12px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: var(--accent); color: #fff; padding: 3px 10px; border-radius: 20px; }
+  .card-body { padding: 1.25rem; }
+  .card-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 0.6rem; }
+  .avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .card-meta span { font-size: 0.8rem; color: var(--muted); }
+  .card-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; line-height: 1.35; margin-bottom: 0.5rem; color: var(--ink); }
+  .card-excerpt { font-size: 0.875rem; color: var(--muted); line-height: 1.65; margin-bottom: 1rem; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .card-actions { display: flex; gap: 0.4rem; }
+  .icon-btn { width: 30px; height: 30px; border-radius: 7px; border: 1.5px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: all 0.2s; text-decoration: none; }
+  .icon-btn:hover { border-color: var(--accent); background: rgba(192,57,43,0.06); }
+  .icon-btn.danger:hover { border-color: #e74c3c; background: rgba(231,76,60,0.06); }
 
-        .nav-buttons a {
-            text-decoration: none;
-            color: white;
-            background: #3b82f6;
-            padding: 8px 16px;
-            border-radius: 6px;
-            margin-left: 10px;
-            transition: 0.3s;
-        }
+  .empty-state { text-align: center; padding: 5rem 2rem; }
+  .empty-state .icon { font-size: 4rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .empty-state p { color: var(--muted); margin-bottom: 1.5rem; }
+</style>
+{% endblock %}
 
-        .nav-buttons a:hover {
-            background: #2563eb;
-        }
+{% block content %}
 
-        /* Blog Container */
-        .container {
-            width: 80%;
-            margin: 40px auto;
-        }
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">✦ A Place for Ideas</div>
+  <h1>Where <em>great stories</em><br>find their voice</h1>
+  <p>Read, write, and connect with curious minds sharing ideas that matter.</p>
+  <div class="hero-cta">
+    {% if user.is_authenticated %}
+      <a href="/create/" class="btn btn-primary">✍ Write a Story</a>
+    {% else %}
+      <a href="/registeruser/" class="btn btn-primary">Start Writing Free</a>
+      <a href="/login/" class="btn btn-outline">Sign In</a>
+    {% endif %}
+  </div>
+</div>
 
-        .blog-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
-        }
+<!-- MESSAGES -->
+{% if messages %}
+<div style="max-width:1100px;margin:1.5rem auto;padding:0 2rem">
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
 
-        .blog-card:hover {
-            transform: translateY(-5px);
-        }
+<!-- BLOG GRID -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Latest Stories</span>
+    <div class="divider"></div>
+    <span style="font-size:0.85rem;color:var(--muted);white-space:nowrap">{{ blogs|length }} post{{ blogs|length|pluralize }}</span>
+  </div>
 
-        .blog-card h1 {
-            margin: 5px 0;
-            color: #1e293b;
-        }
-
-        .blog-card h3 {
-            color: #475569;
-            font-weight: normal;
-        }
-
-        .penname {
-            color: #3b82f6;
-            font-size: 14px;
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="navbar">
-        <h2>My Blogs</h2>
-        <div class="nav-buttons">
-            <a href="{% url 'create' %}">Create</a>
-            <a href="{% url 'logout' %}">Logout</a>
+  {% if blogs %}
+  <div class="blog-grid">
+    {% for blog in blogs %}
+    <a href="/blog/{{ blog.id }}/" style="text-decoration: none; color: inherit;">
+    <div class="blog-card">
+      <div class="card-top">
+        {% if blog.image %}
+          <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+        {% else %}
+          <span class="emoji">📝</span>
+        {% endif %}
+        <span class="card-tag">Story</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <div class="avatar">{{ blog.author.first_name.0 }}{{ blog.author.last_name.0 }}</div>
+          <span>{{ blog.author.first_name }} {{ blog.author.last_name }}</span>
+          <span class="dot"></span>
+          <span>{{ blog.created_at|date:"M j, Y" }}</span>
         </div>
-    </div>
-
-    <div class="container">
-        <form action="{% url 'home' %}" method="get">
-            <input type="text" name="search" placeholder="Search blogs..." value="{{ request.GET.search }}">
-            <button type="submit">Search</button>
-        </form>
-        {% for blog in blogs %}
-        <div class="blog-card">
-            <p class="penname">By {{ blog.penname }}</p>
-            <h1>{{ blog.title }}</h1>
-            <h3>{{ blog.content }}</h3>
-            <a href="{% url 'update' blog.id %}">Edit</a>
-        <a href="{% url 'delete' blog.id %}">Delete</a>
+        <div class="card-title">{{ blog.title }}</div>
+        <div class="card-excerpt">{{ blog.content|truncatewords:20 }}</div>
+        <div class="card-footer">
+          <div class="card-actions" onclick="event.stopPropagation();">
+            {% if user == blog.author %}
+              <a href="/update/{{ blog.id }}/" class="icon-btn" title="Edit">✏️</a>
+              <a href="/delete/{{ blog.id }}/" class="icon-btn danger" title="Delete">🗑</a>
+            {% endif %}
+          </div>
+          <span style="font-size:0.8rem;color:var(--muted)">{{ blog.content|wordcount }} words</span>
         </div>
-        {% endfor %}
-        
+      </div>
     </div>
+    </a>
+    {% endfor %}
+  </div>
 
-</body>
-</html>
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">✍️</div>
+    <h3>No stories yet</h3>
+    <p>Be the first to share something amazing with the world.</p>
+    {% if user.is_authenticated %}
+      <a href="/create/" class="btn btn-primary">Write the First Story</a>
+    {% else %}
+      <a href="/registeruser/" class="btn btn-primary">Get Started</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

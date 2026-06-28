@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <radialGradient id="bgGrad" cx="40%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#2d1f0e"/>
+      <stop offset="100%" stop-color="#0d0804"/>
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#f5d78a"/>
+      <stop offset="35%"  stop-color="#d4a843"/>
+      <stop offset="65%"  stop-color="#b8860b"/>
+      <stop offset="100%" stop-color="#e8c96a"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#8b1a0e"/>
+    </linearGradient>
+    <linearGradient id="quillHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#fef5d4" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#d4a843" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#d4a843" stop-opacity="0.8"/>
+      <stop offset="50%"  stop-color="#f5d78a" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#d4a843" stop-opacity="0.6"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="inkShadow">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#8b1a0e" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect x="1" y="1" width="62" height="62" rx="14" ry="14" fill="url(#bgGrad)"/>
+  <!-- Gold border -->
+  <rect x="1" y="1" width="62" height="62" rx="14" ry="14" fill="none" stroke="url(#borderGrad)" stroke-width="1.2"/>
+  <!-- Subtle texture lines -->
+  <line x1="0" y1="32" x2="64" y2="32" stroke="#d4a843" stroke-width="0.15" opacity="0.12"/>
+  <line x1="32" y1="0" x2="32" y2="64" stroke="#d4a843" stroke-width="0.15" opacity="0.12"/>
+
+  <!-- Quill feather main body -->
+  <path d="M47 7 C47 7, 42 9, 36 14 C28 20, 20 30, 17 42 L21 42 C21 42, 27 30, 36 21 C42 15, 48 10, 47 7Z"
+        fill="url(#goldGrad)" filter="url(#glow)"/>
+  <!-- Feather spine -->
+  <path d="M47 7 C38 16, 26 30, 19 44" fill="none" stroke="#f5d78a" stroke-width="0.8" opacity="0.6" stroke-linecap="round"/>
+  <!-- Inner highlight -->
+  <path d="M47 7 C47 7, 43 10, 38 16 C32 23, 25 32, 22 42 L21 42 C21 42, 27 30, 36 21 C42 15, 48 10, 47 7Z"
+        fill="url(#quillHighlight)" opacity="0.55"/>
+  <!-- Feather barbs -->
+  <path d="M44 10 C40 13, 35 17, 31 22" stroke="#f5d78a" stroke-width="0.5" fill="none" opacity="0.4" stroke-linecap="round"/>
+  <path d="M41 13 C37 16, 32 21, 28 27" stroke="#f5d78a" stroke-width="0.5" fill="none" opacity="0.35" stroke-linecap="round"/>
+  <path d="M38 17 C34 20, 29 26, 25 32" stroke="#f5d78a" stroke-width="0.5" fill="none" opacity="0.3" stroke-linecap="round"/>
+  <path d="M34 22 C31 26, 27 31, 24 37" stroke="#f5d78a" stroke-width="0.4" fill="none" opacity="0.25" stroke-linecap="round"/>
+
+  <!-- Nib -->
+  <path d="M17 42 L14 52 L19 46 L21 42Z" fill="url(#redGrad)" filter="url(#inkShadow)"/>
+  <path d="M17 42 L15.5 48 L17.5 44 L19 42Z" fill="#f5a89a" opacity="0.4"/>
+  <line x1="15.5" y1="47" x2="17.5" y2="43" stroke="#8b1a0e" stroke-width="0.6" opacity="0.7" stroke-linecap="round"/>
+
+  <!-- Ink drop -->
+  <ellipse cx="14.5" cy="54" rx="2.2" ry="3" fill="url(#redGrad)" filter="url(#inkShadow)" opacity="0.95"/>
+  <ellipse cx="13.8" cy="52.8" rx="0.7" ry="0.9" fill="#ff9f9f" opacity="0.45"/>
+
+  <!-- Gold accent dots -->
+  <circle cx="52" cy="12" r="1.2" fill="#d4a843" opacity="0.5"/>
+  <circle cx="56" cy="9"  r="0.7" fill="#d4a843" opacity="0.3"/>
+  <circle cx="55" cy="15" r="0.5" fill="#f5d78a" opacity="0.3"/>
+</svg>
