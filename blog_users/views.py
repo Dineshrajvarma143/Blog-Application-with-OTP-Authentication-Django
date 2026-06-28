@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Blog
+from .froms import ProfileForm
 import random
 
 
@@ -253,6 +254,38 @@ def delete_blog(request, id):
     blog.delete()
     messages.success(request, 'Blog post deleted.')
     return redirect('home')
+
+
+# ─── Update Profile ───────────────────────────────────────────────────────
+@login_required(login_url='login')
+def update_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            # Ensure email/username uniqueness
+            if User.objects.filter(email=email).exclude(pk=user.pk).exists() or User.objects.filter(username=email).exclude(pk=user.pk).exists():
+                messages.error(request, 'An account with this email already exists.')
+                return render(request, 'update_profile.html', {'form': form})
+
+            user = form.save(commit=False)
+            user.username = email
+            user.email = email
+            user.save()
+
+            new_pw = form.cleaned_data.get('password1')
+            if new_pw:
+                user.set_password(new_pw)
+                user.save()
+                login(request, user)
+
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('home')
+    else:
+        form = ProfileForm(instance=user)
+
+    return render(request, 'update_profile.html', {'form': form})
 
 
 # ─── Logout ────────────────────────────────────────────────────────────────

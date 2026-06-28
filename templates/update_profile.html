@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Update Profile</h2>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  <div>
+    <label for="id_first_name">First name</label>
+    {{ form.first_name }}
+  </div>
+  <div>
+    <label for="id_last_name">Last name</label>
+    {{ form.last_name }}
+  </div>
+  <div>
+    <label for="id_email">Email</label>
+    {{ form.email }}
+  </div>
+  <hr>
+  <p>Change password (optional)</p>
+  <div>
+    <label for="id_password1">New password</label>
+    {{ form.password1 }}
+  </div>
+  <div>
+    <label for="id_password2">Confirm new password</label>
+    {{ form.password2 }}
+  </div>
+  <button type="submit">Save changes</button>
+</form>
+
+{% endblock %}
