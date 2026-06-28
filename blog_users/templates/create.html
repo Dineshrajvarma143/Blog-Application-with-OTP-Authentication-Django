@@ -29,11 +29,16 @@
   {% endif %}
 
   <div class="write-card">
-    <form method="POST" action="/create/">
+    <form method="POST" action="/create/" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="form-group">
         <label class="form-label">Story Title *</label>
         <input class="form-input" type="text" name="title" placeholder="Give your story a compelling title…" required autofocus/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cover Image</label>
+        <input class="form-input" type="file" name="image" accept="image/*" />
+        <small style="color: var(--muted);">Optional - JPG, PNG up to 5MB</small>
       </div>
       <div class="form-group">
         <label class="form-label">Your Story *</label>

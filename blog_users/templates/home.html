@@ -18,9 +18,10 @@
   .divider { flex: 1; height: 1px; background: var(--border); }
 
   .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 1.5rem; }
-  .blog-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; }
+  .blog-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; cursor: pointer; }
   .blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px var(--shadow-deep); }
-  .card-top { height: 160px; background: linear-gradient(135deg, var(--cream), var(--warm)); display: flex; align-items: center; justify-content: center; position: relative; }
+  .card-top { height: 160px; background: linear-gradient(135deg, var(--cream), var(--warm)); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .card-top img { width: 100%; height: 100%; object-fit: cover; }
   .card-top .emoji { font-size: 3.5rem; }
   .card-tag { position: absolute; top: 12px; left: 12px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: var(--accent); color: #fff; padding: 3px 10px; border-radius: 20px; }
   .card-body { padding: 1.25rem; }
@@ -80,9 +81,14 @@
   {% if blogs %}
   <div class="blog-grid">
     {% for blog in blogs %}
+    <a href="/blog/{{ blog.id }}/" style="text-decoration: none; color: inherit;">
     <div class="blog-card">
       <div class="card-top">
-        <span class="emoji">📝</span>
+        {% if blog.image %}
+          <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+        {% else %}
+          <span class="emoji">📝</span>
+        {% endif %}
         <span class="card-tag">Story</span>
       </div>
       <div class="card-body">
@@ -95,7 +101,7 @@
         <div class="card-title">{{ blog.title }}</div>
         <div class="card-excerpt">{{ blog.content|truncatewords:20 }}</div>
         <div class="card-footer">
-          <div class="card-actions">
+          <div class="card-actions" onclick="event.stopPropagation();">
             {% if user == blog.author %}
               <a href="/update/{{ blog.id }}/" class="icon-btn" title="Edit">✏️</a>
               <a href="/delete/{{ blog.id }}/" class="icon-btn danger" title="Delete">🗑</a>
@@ -105,6 +111,7 @@
         </div>
       </div>
     </div>
+    </a>
     {% endfor %}
   </div>
 

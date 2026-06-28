@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('',                  RedirectView.as_view(url='/home/'), name='index'),
     path('home/',             views.home,          name='home'),
+    path('blog/<int:id>/',    views.blog_detail,   name='blog_detail'),
     path('registeruser/',     views.register_user, name='register_user'),
     path('login/',            views.login_user,    name='login'),
     path('verify-otp/',       views.verify_otp,    name='verify_otp'),

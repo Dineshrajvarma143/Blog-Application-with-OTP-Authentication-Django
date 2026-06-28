@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ blog.title }} — Inkwell{% endblock %}
+
+{% block extra_css %}
+<style>
+  .detail-container { max-width: 700px; margin: 0 auto; padding: 3rem 2rem; }
+  .detail-image { width: 100%; height: auto; border-radius: var(--radius); margin-bottom: 2rem; }
+  .detail-header { margin-bottom: 2.5rem; }
+  .detail-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: #fff; }
+  .author-info span:first-child { font-weight: 600; }
+  .author-info span:last-child { color: var(--muted); font-size: 0.9rem; }
+  .detail-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 1rem; }
+  .detail-content { font-size: 1.05rem; line-height: 1.85; color: var(--ink); margin-bottom: 2rem; white-space: pre-wrap; word-wrap: break-word; }
+  .detail-actions { display: flex; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .detail-actions .btn { flex: 1; text-align: center; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 2rem; color: var(--accent); text-decoration: none; font-size: 0.95rem; }
+  .back-link:hover { text-decoration: underline; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="detail-container">
+  <a href="/home/" class="back-link">← Back to Stories</a>
+  
+  {% if blog.image %}
+    <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="detail-image">
+  {% endif %}
+  
+  <div class="detail-header">
+    <div class="detail-meta">
+      <div class="avatar">{{ blog.author.first_name.0 }}{{ blog.author.last_name.0 }}</div>
+      <div class="author-info">
+        <div><span>{{ blog.author.first_name }} {{ blog.author.last_name }}</span></div>
+        <span>{{ blog.created_at|date:"M j, Y" }}</span>
+      </div>
+    </div>
+    <h1 class="detail-title">{{ blog.title }}</h1>
+  </div>
+
+  <div class="detail-content">{{ blog.content }}</div>
+
+  {% if user == blog.author %}
+  <div class="detail-actions">
+    <a href="/update/{{ blog.id }}/" class="btn btn-primary">✏️ Edit</a>
+    <a href="/delete/{{ blog.id }}/" class="btn btn-danger" style="background-color: #e74c3c; border-color: #e74c3c;">🗑 Delete</a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
